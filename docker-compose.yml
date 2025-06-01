@@ -1,0 +1,14 @@
+services:
+  frontend:
+    build: .
+    container_name: beervana_frontend
+    volumes:
+      - ./beervana_frontend:/app
+      - ./beervana_frontend/node_modules:/app/node_modules
+    ports:
+      - "8001:8001"
+    stdin_open: true
+    tty: true
+
+volumes:
+  postgres_data:
