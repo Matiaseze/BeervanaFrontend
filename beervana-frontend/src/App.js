@@ -1,8 +1,18 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import ProductList from './components/ProductList';
+import Cart from './components/Cart';
+import Navbar from './components/Navbar';
+
 function App() {
   return (
-    <div className="container mt-5">
-      <h1 className="text-primary">Beervana Fronted</h1>
-    </div>
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<ProductList />} />
+        <Route path="/cart" element={<Cart />} />
+      </Routes>
+    </Router>
   );
 }
 
