@@ -1,0 +1,51 @@
+.footer-custom {
+  background-color: #945623;
+  color: white;
+  text-align: center;
+  padding: 0.5rem 0.5rem;
+  font-family: 'Bebas Neue', sans-serif;
+}
+
+.footer-logo {
+  height: 100px;
+  margin-bottom: 1rem;
+}
+
+.social-icons {
+  margin: 1rem 0;
+}
+
+.social-icons a {
+  color: white;
+  font-size: 1.5rem;
+  margin: 0 10px;
+  transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: gold;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  font-size: 0.9rem;
+  margin: 1rem 0;
+}
+
+.footer-links a {
+  color: #ccc;
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+.footer-warning {
+  font-size: 0.8rem;
+  color: #bbb;
+  margin: 0.5rem 0;
+}

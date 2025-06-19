@@ -1,0 +1,246 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+:root {
+  --color-bg: #0A1E36;
+  --color-primary: #007BFF;
+  --color-secondary: #6c757d;
+  --color-footer: #5C4033; 
+  --font-main: 'Bebas Neue', sans-serif;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar {
+  background-color: var(--color-bg);
+  padding: 20px 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  font-family: var(--font-main);
+  font-size: 1.3rem;
+  color: white;
+}
+
+.navbar-logo {
+  height: 60px;
+}
+
+.navbar-item {
+  margin: 0 15px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.navbar-item:hover {
+  color: var(--color-primary);
+}
+
+.navbar-button {
+  background-color: var(--color-primary);
+  color: white;
+  padding: 10px 20px;
+  border: 2px solid white;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  cursor: pointer;
+  font-family: var(--font-main);
+}
+
+.banner {
+  background-size: cover;
+  background-position: center;
+  color: white;
+  padding: 150px 20px;
+  text-align: center;
+}
+
+.banner h1 {
+  font-size: 3rem;
+  font-family: var(--font-main);
+  text-shadow: 2px 2px 6px #000;
+}
+
+.banner p {
+  font-size: 1.5rem;
+  margin-top: 1rem;
+  text-shadow: 1px 1px 4px #000;
+}
+
+.section-title {
+  Color: #f3eee1cc;
+  font-family: var(--font-main);
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.card-title {
+  font-family: var(--font-main);
+  font-size: 1.4rem;
+}
+
+.footer {
+  background-color: var(--color-footer);
+  color: white;
+  text-align: center;
+  padding: 1rem;
+}
+
+.footer-logo {
+  height: 50px;
+  margin-bottom: 0.5rem;
+}
+
+.footer-small {
+  font-size: 0.9rem;
+  display: block;
+  margin-top: 0.5rem;
+}
+
+.destacada-card {
+  width: 24rem; /* más ancha */
+  padding: 24px 16px; /* más espacioso */
+  font-size: 1.05rem;
+  background-color: rgba(151, 103, 63, 0.6)!important; /* chocolate con transparencia */
+  backdrop-filter: blur(8px); /* efecto vidrio esmerilado */
+  border-radius: 16px!important;
+  padding: 20px 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.destacada-card:hover {
+  transform: translateY(-8px);
+  transform: scale(1.08); 
+  box-shadow: 0 16px 32px rgba(0,0,0,0.5);
+}
+
+.producto-img {
+  height: 300px;
+  object-fit: contain;
+  margin-bottom: 10px;
+  transition: transform 0.4s ease-in-out;
+}
+
+.producto-descrip {
+  color: gold;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.producto-info {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  font-size: 0.85rem;
+  color: #ccc;
+}
+
+.producto-info .label {
+  margin-top: 5px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.producto-info .grado {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: rgb(209, 15, 15);
+}
+
+/* entregas */
+.entregas-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 3rem 2rem; 
+  background-color: #d19f76;
+  color: rgb(41, 40, 40);
+  border-radius: 16px;
+  backdrop-filter: blur(4px);
+  gap: 3rem;
+  flex-wrap: wrap;
+  margin: 300px auto 500px ; 
+  max-width: 1100px;
+  box-sizing: border-box;
+}
+
+.entregas-texto {
+  Color: #7b4b32;
+  max-width: 500px;
+  font-size: 1.1rem;
+  font-family: var(--font-main);
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.entregas-imagen img {
+  width: 400px;
+  max-width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.fondo-beervana {
+  position: relative;
+  background-image: url('../assets/fondo1.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  padding: 3rem 0;
+  z-index: 0;
+}
+
+.fondo-beervana::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: -1;
+}
+
+.btn-ubicacion {
+  display: inline-block;
+  margin-top: 1rem;
+  background-color: #fbfcfd !important;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-family: var(--font-main);
+  font-size: 1.1rem;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.btn-ubicacion:hover {
+  background-color: #f5f8fa;
+}
+
+.local-btn {
+  color: #e6b368!important;
+  background-color: #f39509; 
+  border-color: #e6b368!important;
+  transition: background-color 0.3s ease;
+}
+
+.local-btn:hover {
+  background-color: #74300e!important;
+  border-color: #e65100;
+  color: #fff;
+}
+
+.texto-destacado h3 {
+  color: #f3eee1cc;
+}
+
+.texto-destacado p {
+  color: #e7dbc5;
+}
+
