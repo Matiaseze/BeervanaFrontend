@@ -3,14 +3,26 @@ import { products } from '../data/products';
 import { useCart } from '../CartContext';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import api from '../services/api.js';
 
 function ProductList() {
   const { addToCart } = useCart();
   const chocolate = '#7b4b32';
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     AOS.init({ duration: 800 });
+
+    // Llamada a la API de productos
+  api.get('/facturas')
+    .then((res) => {
+      console.log('Respuesta de la API:', res.data);
+      setProducts(res.data); // Asegurate que res.data sea un array de productos
+    })
+    .catch((error) => {
+      console.error('Error al obtener productos:', error);
+    });
   }, []);
 
   const formatPrice = (price) => {

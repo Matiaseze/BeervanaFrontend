@@ -34,6 +34,9 @@ function Navbar() {
             </li>
           </ul>
           <div className="d-flex gap-2">
+            <Link to="/login" className="btn btn-outline-warning ms-2">
+              Login
+            </Link>
             <Link to="/registro" className="btn btn-outline-warning ms-2">
               Registrarse
             </Link>
