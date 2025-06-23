@@ -1,36 +1,37 @@
+// ProductList.js
 import React, { useState, useEffect } from 'react';
-import { products } from '../data/products';
-import { useCart } from '../CartContext';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import api from '../services/api.js';
+import api from '../services/api';
+import { useCart } from '../CartContext';
 
 function ProductList() {
-  const { addToCart } = useCart();
   const chocolate = '#7b4b32';
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [products, setProducts] = useState([]);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     AOS.init({ duration: 800 });
-
-    // Llamada a la API de productos
-  api.get('/facturas')
-    .then((res) => {
-      console.log('Respuesta de la API:', res.data);
-      setProducts(res.data); // Asegurate que res.data sea un array de productos
-    })
-    .catch((error) => {
-      console.error('Error al obtener productos:', error);
-    });
+    api.get('/cervezas')
+      .then((res) => setProducts(res.data))
+      .catch((error) => console.error('Error al obtener cervezas:', error));
   }, []);
 
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('es-AR', {
-      style: 'currency',
-      currency: 'ARS',
-      minimumFractionDigits: 2,
-    }).format(price);
+  const formatPrice = (price) => new Intl.NumberFormat('es-AR', {
+    style: 'currency',
+    currency: 'ARS',
+    minimumFractionDigits: 2,
+  }).format(price);
+
+  const handleAgregar = async (product) => {
+    const input = prompt(`¿Cuántas unidades de "${product.nombre}" querés agregar?`, '1');
+    const cantidad = parseInt(input);
+    if (!isNaN(cantidad) && cantidad > 0) {
+      await addToCart(product.id, cantidad);
+    } else {
+      alert('Cantidad inválida');
+    }
   };
 
   return (
@@ -51,55 +52,27 @@ function ProductList() {
             >
               <div className="position-relative text-center bg-light rounded-top py-3">
                 <img
-                  src={product.image}
-                  alt={product.name}
+                  src={product.imagen}
+                  alt={product.nombre}
                   className="img-fluid"
                   style={{ maxHeight: '180px', objectFit: 'contain' }}
                 />
-                <span
-                  className="badge position-absolute top-0 end-0 m-2"
-                  style={{ backgroundColor: chocolate, color: 'white' }}
-                >
-                  {product.alcohol || '6.6%'}
+                <span className="badge position-absolute top-0 end-0 m-2" style={{ backgroundColor: chocolate, color: 'white' }}>
+                  {product.graduacion}%
                 </span>
               </div>
               <div className="card-body text-center">
                 <p className="small mb-1" style={{ color: chocolate, opacity: 0.8 }}>
-                  {product.description || 'Bomba de lúpulo / Turbia / Frutada'}
+                  {product.descripcion || 'Sin descripción'}
                 </p>
-                <h5 className="card-title" style={{ color: chocolate }}>
-                  {product.name}
-                </h5>
-                <div className="d-flex justify-content-around my-3" style={{ color: chocolate, opacity: 0.8 }}>
-                  <div>
-                    <div>{'🍋'.repeat(product.bitterness || 3)}</div>
-                    <small>MEDIO<br />Amargor</small>
-                  </div>
-                  <div>
-                    <div>{product.alcohol || '6.6%'}</div>
-                    <small>Alcohol</small>
-                  </div>
-                  <div>
-                    <div>{'🧊'.repeat(product.body || 4)}</div>
-                    <small>MEDIO ALTO<br />Cuerpo</small>
-                  </div>
-                </div>
-                <div className="fw-bold fs-5" style={{ color: chocolate }}>
-                  {formatPrice(product.price)}
-                </div>
+                <h5 className="card-title" style={{ color: chocolate }}>{product.nombre}</h5>
+                <div className="fw-bold fs-5" style={{ color: chocolate }}>{formatPrice(product.precio)}</div>
               </div>
               <div className="card-footer bg-transparent border-top-0 d-flex justify-content-evenly py-3">
                 <button
                   className="btn"
-                  style={{
-                    backgroundColor: chocolate,
-                    color: 'white',
-                    border: `1.5px solid ${chocolate}`,
-                    borderRadius: '5px',
-                    padding: '0.35rem 1rem',
-                    fontWeight: '600',
-                  }}
-                  onClick={() => addToCart(product)}
+                  style={{ backgroundColor: chocolate, color: 'white', border: `1.5px solid ${chocolate}` }}
+                  onClick={() => handleAgregar(product)}
                 >
                   + Agregar
                 </button>
@@ -129,31 +102,26 @@ function ProductList() {
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content" style={{ border: `2px solid ${chocolate}` }}>
               <div className="modal-header">
-                <h5 className="modal-title">{selectedProduct.name}</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={() => setSelectedProduct(null)}
-                />
+                <h5 className="modal-title">{selectedProduct.nombre}</h5>
+                <button type="button" className="btn-close" onClick={() => setSelectedProduct(null)} />
               </div>
               <div className="modal-body text-center">
                 <img
-                  src={selectedProduct.image}
-                  alt={selectedProduct.name}
+                  src={selectedProduct.imagen}
+                  alt={selectedProduct.nombre}
                   className="img-fluid mb-3"
                   style={{ maxHeight: '200px', objectFit: 'contain' }}
                 />
-                <p>{selectedProduct.description}</p>
-                <p><strong>Alcohol:</strong> {selectedProduct.alcohol}</p>
-                <p><strong>Amargor:</strong> {'🍋'.repeat(selectedProduct.bitterness || 3)}</p>
-                <p><strong>Cuerpo:</strong> {'🧊'.repeat(selectedProduct.body || 4)}</p>
+                <p>{selectedProduct.descripcion}</p>
+                <p><strong>Alcohol:</strong> {selectedProduct.graduacion}%</p>
+                <p><strong>Amargor:</strong> {selectedProduct.ibu}</p>
+                <p><strong>Envase:</strong> {selectedProduct.tipo_envase}</p>
               </div>
               <div className="modal-footer">
                 <button className="btn btn-secondary" onClick={() => setSelectedProduct(null)}>Cerrar</button>
-                <button className="btn btn-primary" onClick={() => {
-                  addToCart(selectedProduct);
-                  setSelectedProduct(null);
-                }}>Agregar al carrito</button>
+                <button className="btn btn-primary" onClick={() => { addToCart(selectedProduct.id, 1); setSelectedProduct(null); }}>
+                  Agregar al carrito
+                </button>
               </div>
             </div>
           </div>

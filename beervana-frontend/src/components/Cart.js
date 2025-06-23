@@ -1,34 +1,55 @@
-import React from 'react';
-import { useCart } from '../CartContext';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Minus, Plus, Trash2, ShoppingBag } from 'react-feather';
+import { useCart } from '../CartContext';
 
 function Cart() {
-  const { cartItems, removeFromCart, clearCart, updateQuantity } = useCart();
+  const chocolate = '#7b4b32';
   const navigate = useNavigate();
+  const {
+    cartItems,
+    addToCart,
+    removeFromCart,
+    clearCart,
+    handleCheckoutAndPay
+  } = useCart();
 
-  const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleAgregar = async (id) => {
+    await addToCart(id, 1);
+  };
+
+  const handleRestar = async (id, cantidad) => {
+    if (cantidad <= 1) return;
+    await removeFromCart(id);
+    await addToCart(id, cantidad - 1);
+  };
+
+  const handleQuitar = async (id) => {
+    await removeFromCart(id);
+  };
+
+  const handleVaciar = async () => {
+    await clearCart();
+  };
+
+  const handleComprar = async () => {
+    setIsLoading(true);
+    await handleCheckoutAndPay();
+    setIsLoading(false);
+  };
+
+  const total = cartItems.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
   const shipping = cartItems.length > 0 ? 200 : 0;
   const finalTotal = total + shipping;
-
-  const chocolate = '#7b4b32';
 
   if (cartItems.length === 0) {
     return (
       <div className="container py-5 text-center">
         <ShoppingBag size={80} color={chocolate} className="mb-4" />
         <h2 style={{ color: chocolate }}>Tu carrito está vacío</h2>
-        <p style={{ color: chocolate, opacity: 0.8 }}>¡Descubrí nuestras mejores birras!</p>
-        <button
-          className="btn"
-          style={{
-            borderColor: chocolate,
-            color: chocolate,
-            backgroundColor: 'transparent',
-            borderWidth: '2px',
-          }}
-          onClick={() => navigate('/productos')}
-        >
+        <button className="btn" style={{ color: chocolate }} onClick={() => navigate('/productos')}>
           Ver productos
         </button>
       </div>
@@ -38,69 +59,35 @@ function Cart() {
   return (
     <div className="container py-5">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 style={{ fontFamily: "'Oswald', sans-serif", color: '#5c2e10' }}>
-          Carrito de compras
-        </h2>
-        <button
-          className="btn d-flex align-items-center"
-          onClick={clearCart}
-          style={{ color: chocolate, borderColor: chocolate }}
-        >
-          <Trash2 size={16} className="me-2" color={chocolate} />
-          Vaciar carrito
+        <h2 style={{ color: chocolate }}>Carrito de compras</h2>
+        <button className="btn btn-outline-danger" onClick={handleVaciar}>
+          <Trash2 size={16} /> Vaciar carrito
         </button>
       </div>
 
       <div className="row g-4">
         <div className="col-lg-8">
           {cartItems.map((item) => (
-            <div
-              key={item.id}
-              className="card mb-3 rounded-3 shadow-sm"
-              style={{ border: `1.5px solid ${chocolate}` }}
-            >
-              <div className="card-body d-flex justify-content-between align-items-center">
-                <div className="d-flex align-items-center">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="me-3"
-                    style={{ width: '60px', height: '60px', objectFit: 'contain' }}
-                  />
+            <div key={item.id} className="card mb-3">
+              <div className="card-body d-flex justify-content-between">
+                <div className="d-flex">
+                  <img src={item.imagen_url} alt={item.nombre} style={{ width: 60 }} className="me-3" />
                   <div>
-                    <h6 style={{ color: chocolate }} className="mb-0">{item.name}</h6>
-                    <small className="text-muted">{item.description}</small>
+                    <h6>{item.nombre}</h6>
+                    <small>{item.descripcion}</small>
                   </div>
                 </div>
-
                 <div className="d-flex align-items-center">
-                  <div className="input-group input-group-sm me-3">
-                    <button
-                      className="btn btn-outline-secondary"
-                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      disabled={item.quantity <= 1}
-                    >
-                      <Minus size={14} />
-                    </button>
-                    <span className="input-group-text bg-white" style={{ color: chocolate }}>
-                      {item.quantity}
-                    </span>
-                    <button
-                      className="btn btn-outline-secondary"
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                    >
-                      <Plus size={14} />
-                    </button>
-                  </div>
-                  <div className="text-center" style={{ minWidth: '100px' }}>
-                    <div className="fw-bold" style={{ color: chocolate }}>
-                      ${(item.price * item.quantity).toFixed(2)}
-                    </div>
-                    <button
-                      className="btn p-0 mt-1"
-                      onClick={() => removeFromCart(item.id)}
-                      style={{ color: chocolate }}
-                    >
+                  <button onClick={() => handleRestar(item.id, item.cantidad)} disabled={item.cantidad <= 1}>
+                    <Minus size={14} />
+                  </button>
+                  <span className="mx-2">{item.cantidad}</span>
+                  <button onClick={() => handleAgregar(item.id)}>
+                    <Plus size={14} />
+                  </button>
+                  <div className="ms-4 text-end">
+                    <div>${(item.precio * item.cantidad).toFixed(2)}</div>
+                    <button onClick={() => handleQuitar(item.id)} className="btn p-0">
                       <Trash2 size={16} />
                     </button>
                   </div>
@@ -111,44 +98,29 @@ function Cart() {
         </div>
 
         <div className="col-lg-4">
-          <div className="card bg-white text-dark border rounded-3 shadow-sm">
+          <div className="card">
             <div className="card-header" style={{ backgroundColor: chocolate, color: 'white' }}>
-              <h5 className="mb-0">Resumen del pedido</h5>
+              Resumen del pedido
             </div>
             <div className="card-body">
-              <div className="d-flex justify-content-between mb-2">
-                <span>Subtotal:</span>
-                <span>${total.toFixed(2)}</span>
-              </div>
-              <div className="d-flex justify-content-between mb-2">
-                <span>Envío:</span>
-                <span>${shipping.toFixed(2)}</span>
-              </div>
+              <p>Subtotal: ${total.toFixed(2)}</p>
+              <p>Envío: ${shipping.toFixed(2)}</p>
               <hr />
-              <div className="d-flex justify-content-between fw-bold text-dark h5">
-                <span>Total:</span>
-                <span>${finalTotal.toFixed(2)}</span>
-              </div>
-
+              <h5>Total: ${finalTotal.toFixed(2)}</h5>
               <button
-                className="btn w-100 mt-4"
-                style={{ backgroundColor: chocolate, color: 'white' }}
+                className="btn btn-dark w-100 mt-3"
+                onClick={handleComprar}
+                disabled={isLoading}
               >
-                Proceder al pago
+                {isLoading ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Procesando...
+                  </>
+                ) : (
+                  'Proceder al pago'
+                )}
               </button>
-
-              <button
-                className="btn w-100 mt-2"
-                style={{ border: `1px solid ${chocolate}`, color: chocolate }}
-              >
-                Calcular Envío
-              </button>
-
-              <div className="text-muted mt-3 small">
-                <p>• Envío gratis en compras mayores a $50.000</p>
-                <p>• Entrega rápida en 2-3 días</p>
-                <p>• Garantía de calidad artesanal</p>
-              </div>
             </div>
           </div>
         </div>

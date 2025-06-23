@@ -2,33 +2,50 @@ import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import './Registro.css';
 import Footer from '../components/Footer';
+import { register, login } from '../services/auth';
+import { useNavigate } from 'react-router-dom';
 
-function RegistroChocolate() {
+function Registro() {
   const [formData, setFormData] = useState({
-    nombreCompleto: '',
+    nombre: '',
     email: '',
-    fechaNacimiento: '',
-    provincia: '',
-    ciudad: '',
-    telefono: '',
+    password: '',
     aceptaTerminos: false,
   });
 
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.aceptaTerminos) {
       alert('Debe aceptar los términos y condiciones');
       return;
     }
-    console.log('Datos enviados:', formData);
+
+    try {
+      const userData = {
+        name: formData.nombre,
+        email: formData.email,
+        password: formData.password,
+        password_confirmation: formData.password,
+      };
+
+      await register(userData);
+      await login(formData.email, formData.password); // login automático
+      alert('Registro exitoso');
+      navigate('/'); // o a /productos, como prefieras
+    } catch (err) {
+      console.error('Error al registrar:', err);
+      alert('Error al registrarse');
+    }
   };
 
   return (
@@ -39,12 +56,12 @@ function RegistroChocolate() {
             <h2 className="chocolate-title text-center mb-4">REGISTRO DE USUARIO</h2>
             <Form onSubmit={handleSubmit}>
               <Form.Group className="chocolate-form-group mb-3">
-                <Form.Label className="chocolate-label">Nombre Completo</Form.Label>
+                <Form.Label className="chocolate-label">Nombre</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Tu nombre completo"
-                  name="nombreCompleto"
-                  value={formData.nombreCompleto}
+                  placeholder="Tu nombre"
+                  name="nombre"
+                  value={formData.nombre}
                   onChange={handleChange}
                   className="chocolate-input"
                   required
@@ -65,52 +82,12 @@ function RegistroChocolate() {
               </Form.Group>
 
               <Form.Group className="chocolate-form-group mb-3">
-                <Form.Label className="chocolate-label">Fecha de Nacimiento</Form.Label>
+                <Form.Label className="chocolate-label">Contraseña</Form.Label>
                 <Form.Control
-                  type="date"
-                  name="fechaNacimiento"
-                  value={formData.fechaNacimiento}
-                  onChange={handleChange}
-                  className="chocolate-input"
-                  required
-                />
-              </Form.Group>
-
-              <div className="chocolate-grid">
-                <Form.Group className="chocolate-form-group mb-3">
-                  <Form.Label className="chocolate-label">Provincia</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Tu provincia"
-                    name="provincia"
-                    value={formData.provincia}
-                    onChange={handleChange}
-                    className="chocolate-input"
-                    required
-                  />
-                </Form.Group>
-
-                <Form.Group className="chocolate-form-group mb-3">
-                  <Form.Label className="chocolate-label">Ciudad</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Tu ciudad"
-                    name="ciudad"
-                    value={formData.ciudad}
-                    onChange={handleChange}
-                    className="chocolate-input"
-                    required
-                  />
-                </Form.Group>
-              </div>
-
-              <Form.Group className="chocolate-form-group mb-3">
-                <Form.Label className="chocolate-label">Teléfono</Form.Label>
-                <Form.Control
-                  type="tel"
-                  placeholder="Tu teléfono"
-                  name="telefono"
-                  value={formData.telefono}
+                  type="password"
+                  placeholder="********"
+                  name="password"
+                  value={formData.password}
                   onChange={handleChange}
                   className="chocolate-input"
                   required
@@ -145,4 +122,4 @@ function RegistroChocolate() {
   );
 }
 
-export default RegistroChocolate;
+export default Registro;

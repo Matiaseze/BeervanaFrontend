@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Usá el dominio real si está en producción
 const api = axios.create({
-  baseURL: 'https://beervana-3w480a352-rodrigos-projects-fa5acc60.vercel.app/my_api', // prefijo personalizado
+    baseURL: 'http://127.0.0.1:8000/my_api', // prefijo personalizado
 });
 
 // Agregar token automáticamente si existe

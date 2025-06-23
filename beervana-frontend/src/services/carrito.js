@@ -8,4 +8,4 @@ export const agregarAlCarrito = (cerveza_id, cantidad) =>
 export const quitarDelCarrito = (cerveza_id) =>
   api.delete(`/carrito/quitar/${cerveza_id}`);
 
-export const comprar = () => api.post('/carrito/comprar');
+export const crearFactura = () => api.post('/carrito/generar-factura');
