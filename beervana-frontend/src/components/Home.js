@@ -16,22 +16,38 @@ const productosDestacados = [
   {
     id: 1,
     name: 'Cerveza Rubia',
-    description: 'Refrescante y suave',
+    description: 'Refrescante, ligera y fácil de tomar',
     image: rubiaImg,
+    amargor: '🍺',
+    grado: '4.5%',
+    cuerpo: '🧊🧊',
+    amargorTexto: 'BAJO',
+    cuerpoTexto: 'LIVIANO',
   },
   {
     id: 2,
     name: 'Cerveza Negra',
-    description: 'Aromática y con cuerpo',
+    description: 'Notas a café y chocolate, con mucho cuerpo',
     image: negraImg,
+    amargor: '🍺🍺',
+    grado: '6.8%',
+    cuerpo: '🧊🧊🧊🧊🧊',
+    amargorTexto: 'MEDIO',
+    cuerpoTexto: 'ALTO',
   },
   {
     id: 3,
     name: 'Cerveza IPA',
-    description: 'Con notas cítricas y amargas',
+    description: 'Intensa, cítrica y con amargor potente',
     image: ipaImg,
+    amargor: '🍺🍺🍺🍺',
+    grado: '6.6%',
+    cuerpo: '🧊🧊🧊',
+    amargorTexto: 'ALTO',
+    cuerpoTexto: 'MEDIO',
   },
 ];
+
 
 export default function Home() {
   useEffect(() => {
@@ -112,7 +128,7 @@ export default function Home() {
             <h3 style={{ fontFamily: 'var(--font-main)', fontSize: '2rem' }}>
               ¡Estas birras vuelan como asado en domingo! 
             </h3>
-            <p style={{ fontSize: '1.2rem' }}>
+            <p style={{ fontSize: '1.4rem' }}>
               Si no probás las más pedidas, ¿qué hacés con tu vida, hermano? 
              ¡Salud, que la birra fresca nunca falte! (y si falta… nosotros te la reponemos, pero apurate! 😉) 
             </p>
@@ -131,22 +147,21 @@ export default function Home() {
                       <div className="card destacada-card text-white text-center">
                         <img src={prod.image} className="producto-img mx-auto" alt={prod.name} />
                         <div className="card-body">
-                          <p className="producto-descrip">Bomba de lúpulo / Turbia / Frutada</p>
-                          <h5 className="card-title">{prod.name.toUpperCase()}</h5>
-                          <div className="producto-info mt-3">
-                            <div>
-                              <span role="img" aria-label="amargor">🍺🍺🍺</span>
-                              <p className="label">MEDIO<br /><small>Amargor</small></p>
+                          <p className="producto-descrip">{prod.description}</p>
+                            <div className="producto-info mt-3">
+                              <div>
+                                <span role="img" aria-label="amargor">{prod.amargor}</span>
+                                <p className="label">{prod.amargorTexto}<br /><small>Amargor</small></p>
+                              </div>
+                              <div>
+                                <p className="grado">{prod.grado}</p>
+                                <p className="label">Alcohol</p>
+                              </div>
+                              <div>
+                                <span role="img" aria-label="cuerpo">{prod.cuerpo}</span>
+                                <p className="label">{prod.cuerpoTexto}<br /><small>Cuerpo</small></p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="grado">6.6%</p>
-                              <p className="label">Alcohol</p>
-                            </div>
-                            <div>
-                              <span role="img" aria-label="cuerpo">🧊🧊🧊🧊</span>
-                              <p className="label">MEDIO ALTO<br /><small>Cuerpo</small></p>
-                            </div>
-                          </div>
                         </div>
                       </div>
                     </div>

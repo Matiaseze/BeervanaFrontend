@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Minus, Plus, Trash2, ShoppingBag } from 'react-feather';
 import { useCart } from '../CartContext';
+import Footer from '../components/Footer';
 
 function Cart() {
   const chocolate = '#7b4b32';
@@ -43,6 +44,8 @@ function Cart() {
 
   if (cartItems.length === 0) {
     return (
+    <>
+    <div style={{ background: 'linear-gradient(to right,rgb(218, 178, 139), #e7caae)', minHeight: '100vh', padding: '2rem' }}>
       <div className="container py-5 text-center">
         <ShoppingBag size={80} color={chocolate} className="mb-4" />
         <h2 style={{ color: chocolate }}>Tu carrito está vacío</h2>
@@ -50,36 +53,64 @@ function Cart() {
           Ver productos
         </button>
       </div>
+    </div>
+      {/* Footer */}
+    <Footer />
+  </>   
     );
   }
 
   return (
-    <div className="container py-5">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 style={{ color: chocolate }}>Carrito de compras</h2>
-        <button className="btn btn-outline-danger" onClick={handleVaciar}>
-          <Trash2 size={16} /> Vaciar carrito
-        </button>
-      </div>
-
+  <>
+    <div style={{ background: 'linear-gradient(to right,rgb(218, 178, 139), #e7caae)', minHeight: '100vh', padding: '2rem' }}>
+      <div className="container py-5">
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <h2 style={{ color: chocolate }}>Carrito de compras</h2>
+          <button className="btn" 
+            style={{
+                  border: `2px solid ${chocolate}`,
+                  color: chocolate,
+                  boxShadow: '0 2px 6px rgba(27, 26, 25, 0.15)',
+                  transition: 'box-shadow 0.3s ease',
+                }}
+            onClick={handleVaciar}>
+            <Trash2 size={16} /> Vaciar carrito
+          </button>
+        </div>
       <div className="row g-4">
         <div className="col-lg-8">
           {cartItems.map((item) => (
             <div key={item.id} className="card mb-3">
-              <div className="card-body d-flex justify-content-between">
+              <div className="card-body d-flex justify-content-between" style={{ padding: '1rem 1.25rem' }}>
                 <div className="d-flex">
-                  <img src={item.imagen_url} alt={item.nombre} style={{ width: 60 }} className="me-3" />
+                  <img src={item.imagen_url} alt={item.nombre} style={{
+                      width: '60px',
+                      height: '80px',
+                      objectFit: 'contain',
+                      borderRadius: '4px',
+                    }}
+                    className="me-3"
+                  />
                   <div>
                     <h6>{item.nombre}</h6>
                     <small>{item.descripcion}</small>
                   </div>
                 </div>
                 <div className="d-flex align-items-center">
-                  <button onClick={() => handleRestar(item.id, item.cantidad)} disabled={item.cantidad <= 1}>
+                  <button
+                    className="btn btn-outline-secondary btn-sm me-1"
+                    style={{ borderColor: chocolate, color: chocolate }}
+                    onClick={() => handleRestar(item.id, item.cantidad)}
+                    disabled={item.cantidad <= 1}
+                  >
                     <Minus size={14} />
                   </button>
                   <span className="mx-2">{item.cantidad}</span>
-                  <button onClick={() => handleAgregar(item.id)}>
+                  <button
+                    className="btn btn-outline-secondary btn-sm"
+                    style={{ borderColor: chocolate, color: chocolate }}
+                    onClick={() => handleAgregar(item.id)}
+                  >
                     <Plus size={14} />
                   </button>
                   <div className="ms-4 text-end">
@@ -93,7 +124,6 @@ function Cart() {
             </div>
           ))}
         </div>
-
         <div className="col-lg-4">
           <div className="card">
             <div className="card-header" style={{ backgroundColor: chocolate, color: 'white' }}>
@@ -105,7 +135,13 @@ function Cart() {
               <hr />
               <h5>Total: ${finalTotal.toFixed(2)}</h5>
               <button
-                className="btn btn-dark w-100 mt-3"
+                className="btn w-100 mt-3"
+                style={{
+                  border: `2px solid ${chocolate}`,
+                  color: chocolate,
+                  boxShadow: '0 2px 6px rgba(27, 26, 25, 0.15)',
+                  transition: 'box-shadow 0.3s ease',
+                }}
                 onClick={handleComprar}
                 disabled={isLoading}
               >
@@ -123,6 +159,10 @@ function Cart() {
         </div>
       </div>
     </div>
+  </div>
+  {/* Footer */}
+    <Footer />
+  </>
   );
 }
 

@@ -128,7 +128,7 @@ body {
 }
 
 .producto-descrip {
-  color: gold;
+  color: rgb(236, 154, 31);
   font-size: 0.9rem;
   font-weight: 500;
   margin-bottom: 5px;
@@ -152,25 +152,26 @@ body {
 .producto-info .grado {
   font-size: 1.1rem;
   font-weight: bold;
-  color: rgb(209, 15, 15);
+  color: rgb(163, 52, 8);
 }
 
 /* entregas */
 .entregas-container {
   display: flex;
   align-items: center;
-  justify-content: space-around;
-  padding: 3rem 2rem; 
+  justify-content: space-between;
+  padding: 4rem 3rem; /* más alto y más margen lateral */
   background-color: #d19f76;
   color: rgb(41, 40, 40);
   border-radius: 16px;
-  backdrop-filter: blur(4px);
   gap: 3rem;
   flex-wrap: wrap;
-  margin: 300px auto 500px ; 
-  max-width: 1100px;
+  margin: 100px auto;
+  max-width: 1200px; /* más ancho que antes pero sin pegarse al borde */
   box-sizing: border-box;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
+
 
 .entregas-texto {
   Color: #7b4b32;
@@ -224,14 +225,14 @@ body {
 }
 
 .local-btn {
-  color: #e6b368!important;
+  color: #6d4406!important;
   background-color: #f39509; 
-  border-color: #e6b368!important;
+  border-color: #6d4406!important;
   transition: background-color 0.3s ease;
 }
 
 .local-btn:hover {
-  background-color: #74300e!important;
+  background-color: #b37d3f!important;
   border-color: #e65100;
   color: #fff;
 }

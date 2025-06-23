@@ -4,8 +4,10 @@ import { useCart } from '../CartContext';
 import { pagarFactura } from '../services/factura';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Footer from '../components/Footer';
 
 function Pago() {
+  const chocolate = '#7b4b32';
   const { checkout, fetchCart } = useCart();
   const [factura, setFactura] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -47,11 +49,13 @@ function Pago() {
     }
   };
 
-  if (loading) return <div className="container py-5 text-center">Cargando factura...</div>;
+  if (loading) return <div style={{ background: 'linear-gradient(to right,rgb(218, 178, 139), #e7caae)', minHeight: '100vh', padding: '2rem' }}><div className="container py-5 text-center">Cargando factura...</div> </div>;
 
   if (!factura) return null;
 
   return (
+  <>
+  <div style={{ background: 'linear-gradient(to right,rgb(223, 184, 145),rgb(231, 190, 152))', minHeight: '100vh', padding: '2rem' }}>
     <div className="container py-5">
       <h2 className="mb-4">Resumen de Factura</h2>
       <div className="card mb-4">
@@ -59,7 +63,7 @@ function Pago() {
           <p><strong>Fecha:</strong> {new Date(factura.fecha).toLocaleString()}</p>
           <ul className="list-group mb-3">
             {factura.detalles.map((item) => (
-              <li key={item.id} className="list-group-item d-flex justify-content-between">
+              <li key={item.id} className="list-group-item d-flex justify-content-between" style={{ backgroundColor: '#f5e4c3' , border: '1.5px solid #7b4b32' }}>
                 <div>
                   {item.cerveza.nombre} x {item.cantidad}
                 </div>
@@ -71,12 +75,27 @@ function Pago() {
         </div>
       </div>
 
-      <h4>Elegí método de pago:</h4>
+      <h4>Seleccioná un método de pago:</h4>
       <div className="d-flex gap-3 mb-4">
-        <button className="btn btn-primary" onClick={handlePago}>Pagar con tarjeta (simulado)</button>
-        <button className="btn btn-secondary" disabled>Mercado Pago (próximamente)</button>
+        <button className="btn" 
+          style={{ backgroundColor: chocolate, color: 'white', border: `1.5px solid ${chocolate}` }}
+          onClick={handlePago}>Pagar con tarjeta (simulado)</button>
+        <button className="btn" 
+          style={{
+                      borderRadius: '5px',
+                      border: `1.5px solid ${chocolate}`,
+                      color: chocolate,
+                      backgroundColor: 'transparent',
+                      fontWeight: '600',
+                      padding: '0.35rem 1rem',
+                    }}
+          disabled>Mercado Pago (próximamente)</button>
       </div>
     </div>
+  </div>
+  {/* Footer */}
+    <Footer />
+  </>
   );
 }
 

@@ -32,10 +32,9 @@ function Navbar() {
         </button>
         <div className="collapse navbar-collapse justify-content-between" id="navbarNav">
           <ul className="navbar-nav mx-auto">
-            <li className="nav-item"><Link className="nav-link" to="/">Inicio</Link></li>
-            <li className="nav-item"><Link className="nav-link" to="/productos">Productos</Link></li>
-            <li className="nav-item"><Link className="nav-link" to="/contacto">Contacto</Link></li>
-            <li className="nav-item"><Link className="nav-link" to="/sobre-nosotros">Sobre nosotros</Link></li>
+            <li className="nav-item"><Link className="nav-link" style={{ fontSize: '1.4rem' }} to="/">Inicio</Link></li>
+            <li className="nav-item"><Link className="nav-link" style={{ fontSize: '1.4rem' }} to="/productos">Productos</Link></li>
+            <li className="nav-item"><Link className="nav-link" style={{ fontSize: '1.4rem' }}to="/sobre-nosotros">Sobre nosotros</Link></li>
           </ul>
           <div className="d-flex">
             {user ? (
@@ -44,7 +43,7 @@ function Navbar() {
                   <ShoppingCart size={16} />
                   <span className="ms-2">Carrito ({itemCount})</span>
                 </Link>
-                <button className="btn btn-outline-danger" onClick={handleLogout}>
+                <button className="btn btn-outline-warning me-2" onClick={handleLogout}>
                   Logout
                 </button>
               </>
