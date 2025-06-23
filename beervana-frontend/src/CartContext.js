@@ -50,12 +50,12 @@ export const CartProvider = ({ children }) => {
   };
 
   const checkout = async () => {
+    console.log('[CHECKOUT] Generando factura...');
     try {
-      const res = await crearFactura(); // crea factura impaga
+      const res = await crearFactura();
       return res.data.factura;
     } catch (error) {
       console.error('Error al generar la factura:', error);
-      alert('No se pudo generar la factura');
       return null;
     }
   };
@@ -71,19 +71,6 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const handleCheckoutAndPay = async () => {
-    try {
-      const factura = await checkout();
-      if (factura) {
-        await payInvoice(factura.id);
-        alert('¡Compra realizada con éxito!');
-      }
-    } catch (error) {
-      console.error('Error en el proceso de compra:', error);
-      alert('No se pudo completar la compra');
-    }
-  };
-
   return (
     <CartContext.Provider
       value={{
@@ -93,7 +80,7 @@ export const CartProvider = ({ children }) => {
         clearCart,
         checkout,
         payInvoice,
-        handleCheckoutAndPay, // ✅ nuevo método centralizado
+        fetchCart
       }}
     >
       {children}

@@ -11,7 +11,6 @@ function Cart() {
     addToCart,
     removeFromCart,
     clearCart,
-    handleCheckoutAndPay
   } = useCart();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -34,10 +33,8 @@ function Cart() {
     await clearCart();
   };
 
-  const handleComprar = async () => {
-    setIsLoading(true);
-    await handleCheckoutAndPay();
-    setIsLoading(false);
+  const handleComprar = () => {
+    navigate('/pago');
   };
 
   const total = cartItems.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
