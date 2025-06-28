@@ -36,3 +36,23 @@
     transform: rotate(360deg);
   }
 }
+body {
+  background-color: #f9f9f9;
+  font-family: 'Inter', sans-serif;
+}
+
+.btn-warning {
+  background-color: #f3a847;
+  border-color: #f3a847;
+}
+
+.btn-outline-secondary {
+  border-color: #8b5e3c;
+  color: #8b5e3c;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #8b5e3c;
+  color: white;
+}
+

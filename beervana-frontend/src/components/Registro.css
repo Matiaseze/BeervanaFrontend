@@ -1,0 +1,163 @@
+.chocolate-registro-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 80px);
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(to right, #e0bc98, #e7caae);
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+/* Panel del formulario */
+.chocolate-formulario-lateral {
+  width: 100%;
+  max-width: 700px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+  box-sizing: border-box;
+}
+
+/* Contenedor del formulario */
+.chocolate-form-wrapper {
+  background: rgba(26, 18, 11, 0.9);
+  border: 1px solid #d4a373;
+  border-radius: 15px;
+  width: 100%;
+  padding: 2rem;
+  transition: all 0.3s ease;
+}
+
+.chocolate-form-wrapper:hover {
+  box-shadow: none;
+}
+
+/* Título */
+.chocolate-title {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #9e8f83;
+  margin-bottom: 1.5rem;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+/* Título */
+.custom-title {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #e4dacf;
+  margin-bottom: 1.5rem;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+/* Grupos de input */
+.chocolate-form-group {
+  margin-bottom: 1.5rem;
+}
+
+.chocolate-label {
+  color: #d4a373 !important;
+  font-weight: 500;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.chocolate-input {
+  background: rgba(58, 42, 21, 0.7) !important;
+  border: 1px solid #d4a373 !important;
+  color: #f8f9fa !important;
+  border-radius: 8px !important;
+  padding: 12px 16px !important;
+  font-size: 1rem !important;
+  transition: all 0.3s ease !important;
+}
+
+.chocolate-input:focus {
+  border-color: #faedcd !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.chocolate-input::placeholder {
+  color: rgba(212, 163, 115, 0.6) !important;
+}
+
+/* Checkbox */
+.chocolate-checkbox-group {
+  background: rgba(212, 163, 115, 0.1)!important;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(212, 163, 115, 0.3);
+}
+
+.form-check-input.chocolate-checkbox {
+  border: 1px solid #d4a373 !important;
+  background: rgba(58, 42, 21, 0.7) !important;
+}
+
+.form-check-input.chocolate-checkbox:checked {
+  background: #d4a373 !important;
+  border-color: #faedcd !important;
+  box-shadow: none !important;
+}
+
+.form-check-label {
+  color: #d4a373 !important;
+  font-weight: 500;
+}
+
+/* Botón de enviar */
+.chocolate-submit-btn {
+  background: linear-gradient(to right, #d4a373, #b08968) !important;
+  color: #1a120b !important;
+  border: none !important;
+  font-weight: bold !important;
+  font-size: 1.1rem !important;
+  padding: 14px 28px !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+  transition: background-color 0.3s ease !important;
+  letter-spacing: 1px !important;
+}
+
+.chocolate-submit-btn:hover:not(:disabled) {
+  background: linear-gradient(to right, #b08968, #8b5e34) !important;
+  box-shadow: none !important;
+}
+
+.chocolate-submit-btn:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
+
+/* Grid ciudad/provincia */
+.chocolate-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .chocolate-registro-container {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .chocolate-formulario-lateral {
+    padding: 2rem 1rem;
+  }
+
+  .chocolate-title {
+    font-size: 1.8rem;
+  }
+
+  .chocolate-grid {
+    grid-template-columns: 1fr;
+  }
+}
