@@ -33,16 +33,13 @@ function Cart() {
     });
     setCartItems(updated);
     localStorage.setItem('cart', JSON.stringify(updated));
-    // Si querés mantener el estado sincronizado tambien:
-    // setCartItems() lo podés exponer desde el contexto, o hacer que addToCart pueda sumar tambien
-    window.dispatchEvent(new Event("storage")); // forzar re-render si necesario
+    window.dispatchEvent(new Event("storage"));
   }
 
   const handleRestar = (id) => {
     const item = cartItems.find(item => item.id === id);
     if (!item || item.cantidad <= 1) return;
 
-    // En vez de llamar a remove + add, modificamos directamente
     const updated = cartItems.map(ci => {
       if (ci.id === id) {
         return { ...ci, cantidad: ci.cantidad - 1 };
@@ -51,9 +48,7 @@ function Cart() {
     });
     setCartItems(updated);
     localStorage.setItem('cart', JSON.stringify(updated));
-    // Si querés mantener el estado sincronizado también:
-    // setCartItems() lo podés exponer desde el contexto, o hacer que addToCart pueda restar también
-    window.dispatchEvent(new Event("storage")); // forzar re-render si necesario
+    window.dispatchEvent(new Event("storage"));
   };
 
   const handleQuitar = (id) => {
@@ -86,7 +81,6 @@ function Cart() {
             </button>
           </div>
         </div>
-        {/* Footer */}
         <Footer />
       </>
     );
@@ -114,7 +108,6 @@ function Cart() {
               {cartItems.map((item) => (
                 <div key={item.id} className="card mb-3">
                   <div className="card-body d-flex justify-content-between align-items-center" style={{ padding: '1rem 1.25rem' }}>
-                    {/* Imagen y nombre */}
                     <div className="d-flex align-items-center" style={{ flex: 2 }}>
                       <img
                         src={item.imagen_url}
@@ -126,8 +119,6 @@ function Cart() {
                         <h6 className="mb-0">{item.nombre}</h6>
                       </div>
                     </div>
-
-                    {/* Controles de cantidad */}
                     <div className="d-flex align-items-center justify-content-center" style={{ flex: 2 }}>
                       <button
                         className="btn btn-outline-secondary btn-sm me-1"
@@ -146,8 +137,6 @@ function Cart() {
                         <Plus size={14} />
                       </button>
                     </div>
-
-                    {/* Precio total y eliminar */}
                     <div className="d-flex justify-content-between align-items-center" style={{ flex: 1 }}>
                       <div className="fw-bold">${(item.precio * item.cantidad).toFixed(2)}</div>
                       <button onClick={() => handleQuitar(item.id)} className="btn p-0 text-danger ms-3">
@@ -175,6 +164,8 @@ function Cart() {
                       color: chocolate,
                       boxShadow: '0 2px 6px rgba(27, 26, 25, 0.15)',
                       transition: 'box-shadow 0.3s ease',
+                      fontWeight: '600',
+                      height: '38px',
                     }}
                     onClick={handleComprar}
                     disabled={isLoading}
@@ -182,7 +173,7 @@ function Cart() {
                     {isLoading ? (
                       <>
                         <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                        Procesando...
+                        Generando factura...
                       </>
                     ) : (
                       'Proceder al pago'
@@ -194,7 +185,6 @@ function Cart() {
           </div>
         </div>
       </div>
-      {/* Footer */}
       <Footer />
     </>
   );

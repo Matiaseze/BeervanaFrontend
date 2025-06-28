@@ -4,16 +4,18 @@ import logo from '../assets/Ber.png';
 import { ShoppingCart } from 'react-feather';
 import { useCart } from '../CartContext';
 import { useAuth } from '../AuthContext';
+import { toast } from 'react-toastify';
 
 function Navbar() {
   const { cartItems } = useCart();
-  const { user, logout } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const itemCount = cartItems.reduce((sum, item) => sum + item.cantidad, 0);
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
-    navigate('/'); // redirige al inicio
+  const handleLogout = async () => {
+    await logout();
+    toast.success('Sesión cerrada con éxito');
+    navigate('/');
   };
 
   return (
@@ -30,14 +32,22 @@ function Navbar() {
         >
           <span className="navbar-toggler-icon" />
         </button>
+
         <div className="collapse navbar-collapse justify-content-between" id="navbarNav">
           <ul className="navbar-nav mx-auto">
-            <li className="nav-item"><Link className="nav-link" style={{ fontSize: '1.4rem' }} to="/">Inicio</Link></li>
-            <li className="nav-item"><Link className="nav-link" style={{ fontSize: '1.4rem' }} to="/productos">Productos</Link></li>
-            <li className="nav-item"><Link className="nav-link" style={{ fontSize: '1.4rem' }}to="/sobre-nosotros">Sobre nosotros</Link></li>
+            <li className="nav-item">
+              <Link className="nav-link" style={{ fontSize: '1.4rem' }} to="/">Inicio</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" style={{ fontSize: '1.4rem' }} to="/productos">Productos</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" style={{ fontSize: '1.4rem' }} to="/sobre-nosotros">Sobre nosotros</Link>
+            </li>
           </ul>
+
           <div className="d-flex">
-            {user ? (
+            {isAuthenticated ? (
               <>
                 <Link to="/cart" className="btn btn-outline-light d-flex align-items-center me-2">
                   <ShoppingCart size={16} />

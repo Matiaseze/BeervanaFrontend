@@ -125,13 +125,13 @@ const clearCart = async () => {
   const payInvoice = async (facturaId) => {
     try {
       await pagarFactura(facturaId);
-      alert('¡Pago exitoso!');
-      clearCart();
+      await clearCart(); // importante mantener el await
     } catch (error) {
       console.error('Error al pagar la factura:', error);
-      alert('No se pudo procesar el pago');
+      toast.error('No se pudo procesar el pago');
     }
   };
+  
 
   // Sincronización al cerrar pestaña
 const syncCartWithBackend = async (itemslocal) => {
