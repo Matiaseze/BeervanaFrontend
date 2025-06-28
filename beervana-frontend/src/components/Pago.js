@@ -13,7 +13,7 @@ function Pago() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const hasRun = useRef(false); // ✅ Para evitar múltiples ejecuciones
+  const hasRun = useRef(false);
 
   useEffect(() => {
     const generarFactura = async () => {

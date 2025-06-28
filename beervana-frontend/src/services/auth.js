@@ -12,7 +12,6 @@ export const login = async (email, password) => {
   }
 });
 
-  console.log("DEBUG")
   localStorage.setItem('token', response.data.token); // guardar token
   return response.data;
 };

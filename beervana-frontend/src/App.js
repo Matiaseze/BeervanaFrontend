@@ -12,6 +12,7 @@ import { CartProvider } from './CartContext'; // <- importás el provider
 import { AuthProvider } from './AuthContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ProtectedRoute from './ProtectedRoute'; // Para las rutas protegidas
 
 function App() {
   return (
@@ -21,7 +22,11 @@ function App() {
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/productos" element={<ProductList />} />
+            <Route path="/productos" element={
+              <ProtectedRoute>
+                <ProductList />
+              </ProtectedRoute>
+            } />
             <Route path="/cart" element={<Cart />} />
             <Route path="/login" element={<Login />} />
             <Route path="/registro" element={<Registro />} />

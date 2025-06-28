@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login as loginService } from '../services/auth';
 import { useAuth } from '../AuthContext';
+import { Form, Button } from 'react-bootstrap';
+import './Registro.css'; // Reutilizamos el CSS
+import Footer from './Footer';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -17,7 +20,7 @@ function Login() {
       const data = await loginService(email, password);
       login(data.token); // actualiza el contexto y localStorage
 
-      navigate('/'); // redirige al inicio o donde prefieras
+      navigate('/');
     } catch (error) {
       console.error('Error al iniciar sesión:', error);
       alert('Credenciales incorrectas o error del servidor');
@@ -25,36 +28,50 @@ function Login() {
   };
 
   return (
-    <div className="container py-5" style={{ maxWidth: '500px' }}>
-      <h2 className="mb-4 text-center">Iniciar Sesión</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label">Correo electrónico</label>
-          <input
-            type="email"
-            className="form-control"
-            value={email}
-            required
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
+    <>
+      <div className="chocolate-registro-container">
+        <div className="chocolate-formulario-lateral">
+          <div className="chocolate-form-wrapper">
+            <h2 className="custom-title text-center mb-4">INICIAR SESIÓN</h2>
+            <Form onSubmit={handleSubmit}>
+              <Form.Group className="chocolate-form-group mb-3">
+                <Form.Label className="chocolate-label">Correo electrónico</Form.Label>
+                <Form.Control
+                  type="email"
+                  placeholder="ejemplo@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="chocolate-input"
+                  required
+                />
+              </Form.Group>
 
-        <div className="mb-3">
-          <label className="form-label">Contraseña</label>
-          <input
-            type="password"
-            className="form-control"
-            value={password}
-            required
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
+              <Form.Group className="chocolate-form-group mb-4">
+                <Form.Label className="chocolate-label">Contraseña</Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="********"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="chocolate-input"
+                  required
+                />
+              </Form.Group>
 
-        <button type="submit" className="btn btn-dark w-100">
-          Iniciar Sesión
-        </button>
-      </form>
-    </div>
+
+              <div className="text-center mt-3 py-3">
+                <a href="/registro">¿No tenés cuenta? Registrate</a>
+              </div>
+
+              <Button type="submit" className="chocolate-submit-btn w-100">
+                INICIAR SESIÓN
+              </Button>
+            </Form>
+          </div>
+        </div>
+      </div>
+      <Footer />
+    </>
   );
 }
 

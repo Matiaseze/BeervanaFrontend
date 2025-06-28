@@ -1,14 +1,17 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useCart } from './CartContext';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const { syncCartWithBackend } = useCart();
+  const navigate = useNavigate();
 
   const checkAuth = () => {
     const token = localStorage.getItem('token');
     if (token) {
-      // Podés guardar más datos si querés, como el nombre del usuario
       setUser({ token });
     } else {
       setUser(null);
@@ -20,10 +23,20 @@ export const AuthProvider = ({ children }) => {
     setUser({ token });
   };
 
-  const logout = () => {
+
+const logout = async () => {
+  try {
+    const storedCart = localStorage.getItem('cart');
+    const itemslocal = storedCart ? JSON.parse(storedCart) : [];
+    await syncCartWithBackend(itemslocal); // ✅ sincroniza antes de logout
+  } catch (error) {
+    console.error("Error sincronizando antes de logout:", error);
+  } finally {
     localStorage.removeItem('token');
-    setUser(null);
-  };
+    localStorage.removeItem('cart');
+    navigate('/login');
+  }
+};
 
   useEffect(() => {
     checkAuth();
