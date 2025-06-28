@@ -4,7 +4,7 @@ export const verCarrito = () => api.get('/carrito');
 
 export const sincronizarCarrito = (items) => api.post('/carrito/sincronizar', { items });
 
-export const vaciarCarrito = () => api.delete('/carrito/vaciar');
+export const vaciarCarrito = () => api.delete('/carrito/limpiar');
 
 export const agregarAlCarrito = (cerveza_id, cantidad) =>
   api.post('/carrito/agregar', { cerveza_id, cantidad });

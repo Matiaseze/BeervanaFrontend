@@ -96,18 +96,18 @@ useEffect(() => {
   toast.success('Producto agregado al carrito');
 };
 
-  const removeFromCart = (id) => {
+  const removeFromCart = (id) => { 
     setCartItems(prev => prev.filter(item => item.id !== id));
   };
 
 const clearCart = async () => {
   try {
-    await vaciarCarrito(); // ✅ vacía en backend
+    await vaciarCarrito(); // vacía en backend
   } catch (error) {
     console.error("Error al vaciar el carrito en backend:", error);
   } finally {
-    localStorage.removeItem('cart'); // ✅ limpia local
-    setCartItems([]);               // ✅ limpia estado en memoria
+    localStorage.removeItem('cart'); // limpia local
+    setCartItems([]);               // limpia estado en memoria
   }
 };
 
