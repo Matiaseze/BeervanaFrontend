@@ -8,7 +8,6 @@ import rubiaImg from '../assets/cervezas/rubia.png';
 import negraImg from '../assets/cervezas/negra.png';
 import ipaImg from '../assets/cervezas/ipa.png';
 import reparto from '../assets/reparto.png';
-import fondo1 from '../assets/fondo1.jpeg';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 

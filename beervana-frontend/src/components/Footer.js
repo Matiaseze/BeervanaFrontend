@@ -26,8 +26,8 @@ function Footer() {
       </div>
 
       <div className="footer-links">
-        <a href="https://docs.google.com/document/d/1WDDi6XGsK5L1VJSZ5RV_hC4OFw4ulezdRIrrC9KFBB0/edit?usp=sharing" target="_blank">Términos y Condiciones</a>
-        <a href="https://www.privacypolicies.com/live/840b84b9-7fda-428b-b041-0e45ce994df9" target="_blank">Política de Privacidad</a>
+        <a href="https://docs.google.com/document/d/1WDDi6XGsK5L1VJSZ5RV_hC4OFw4ulezdRIrrC9KFBB0/edit?usp=sharing" target="_blank" rel="noreferrer">Términos y Condiciones</a>
+        <a href="https://www.privacypolicies.com/live/840b84b9-7fda-428b-b041-0e45ce994df9" target="_blank" rel="noreferrer">Política de Privacidad</a>
         <a href="/sobre-nosotros">Información oficial de la compañía</a>
       </div>
 
