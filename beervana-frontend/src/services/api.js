@@ -16,4 +16,31 @@ api.interceptors.request.use(config => {
   return config;
 });
 
+// Rutas que responden 401 como parte de su funcionamiento normal: un login con
+// credenciales incorrectas no significa que la sesión haya vencido.
+const RUTAS_PUBLICAS = ['/login', '/register'];
+
+// Sesión vencida: sin esto el token inválido quedaba en localStorage,
+// isAuthenticated seguía en true porque solo mira que exista, y cada request
+// moría en silencio. Desde la UI se ve como "hago click y no pasa nada".
+api.interceptors.response.use(
+  response => response,
+  error => {
+    const url = error.config?.url || '';
+    const esPublica = RUTAS_PUBLICAS.some(ruta => url.endsWith(ruta));
+
+    if (error.response?.status === 401 && !esPublica && localStorage.getItem('token')) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('cart');
+      // Redirección dura: este módulo está fuera del árbol de React y no puede
+      // usar useNavigate. Al recargar, AuthProvider arranca sin sesión.
+      if (window.location.pathname !== '/login') {
+        window.location.assign('/login');
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
 export default api;

@@ -1,33 +1,31 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { useCart } from './CartContext';
 import { useNavigate } from 'react-router-dom';
 import { logout as apiLogout } from './services/auth';
 
 const AuthContext = createContext();
 
+// Lee el token en el primer render, no en un useEffect posterior.
+// Si se hace en un efecto, el render inicial tiene user = null y ProtectedRoute
+// alcanza a redirigir a /login antes de que el efecto corra: al recargar una
+// ruta protegida te expulsaba aunque la sesión siguiera abierta.
+const leerSesionGuardada = () => {
+  const token = localStorage.getItem('token');
+  return token ? { token } : null;
+};
+
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const { syncCartWithBackend, clearCart } = useCart();
+  const [user, setUser] = useState(leerSesionGuardada);
+  const { syncCartWithBackend, clearCartLocal, fetchCart } = useCart();
   const navigate = useNavigate();
 
-  // Verifica si hay token al iniciar
-  const checkAuth = () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      setUser({ token });
-    } else {
-      setUser(null);
-    }
-  };
-
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
   // Al iniciar sesión exitosamente
-  const login = (token) => {
+  const login = async (token) => {
     localStorage.setItem('token', token);
     setUser({ token });
+    // Traer el carrito guardado del usuario. CartProvider solo lo pide al
+    // montarse, así que sin esto no aparecía hasta recargar la página.
+    await fetchCart();
   };
 
   // Al cerrar sesión
@@ -45,8 +43,11 @@ export const AuthProvider = ({ children }) => {
       console.error("Error durante el logout:", error);
     } finally {
       localStorage.removeItem('token');
-      localStorage.removeItem('cart');
-      clearCart(); // ✅ limpia memoria y estado del frontend
+      // Limpieza solo local: el carrito recién sincronizado tiene que quedar
+      // guardado en el backend para cuando el usuario vuelva a entrar.
+      // (Antes se llamaba a clearCart(), que intenta vaciarlo en el server;
+      // no lo borraba de casualidad, porque el token ya no estaba y daba 401.)
+      clearCartLocal();
       setUser(null);
       navigate('/login');
     }

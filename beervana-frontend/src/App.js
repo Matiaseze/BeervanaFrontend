@@ -17,8 +17,10 @@ import ProtectedRoute from './ProtectedRoute'; // Para las rutas protegidas
 function App() {
   return (
     <Router>
-      <AuthProvider>
-        <CartProvider>
+      {/* CartProvider va por fuera: AuthProvider usa useCart() en su logout,
+          así que necesita tener el contexto de carrito por encima. */}
+      <CartProvider>
+        <AuthProvider>
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />
