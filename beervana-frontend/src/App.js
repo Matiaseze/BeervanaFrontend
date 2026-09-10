@@ -8,6 +8,10 @@ import Cart from './components/Cart';
 import Navbar from './components/Navbar';
 import Login from './components/Login';
 import Pago from './components/Pago';
+import Compras from './components/Compras';
+import DetallePedido from './components/DetallePedido';
+import FacturaPreview from './components/FacturaPreview';
+import ComprobantePedido from './components/ComprobantePedido';
 import { CartProvider } from './CartContext'; // <- importás el provider
 import { AuthProvider } from './AuthContext';
 import { ToastContainer } from 'react-toastify';
@@ -29,15 +33,43 @@ function App() {
                 <ProductList />
               </ProtectedRoute>
             } />
-            <Route path="/cart" element={<Cart />} />
+            <Route path="/cart" element={
+              <ProtectedRoute>
+                <Cart />
+              </ProtectedRoute>
+            } />
             <Route path="/login" element={<Login />} />
             <Route path="/registro" element={<Registro />} />
             <Route path="/sobre-nosotros" element={<SobreNosotros />} />
-            <Route path="/pago" element={<Pago />} />
+            <Route path="/pago" element={
+              <ProtectedRoute>
+                <Pago />
+              </ProtectedRoute>
+            } />
+            <Route path="/compras" element={
+              <ProtectedRoute>
+                <Compras />
+              </ProtectedRoute>
+            } />
+            <Route path="/pedidos/:codigo" element={
+              <ProtectedRoute>
+                <DetallePedido />
+              </ProtectedRoute>
+            } />
+            <Route path="/pedidos/:codigo/comprobante" element={
+              <ProtectedRoute>
+                <ComprobantePedido />
+              </ProtectedRoute>
+            } />
+            <Route path="/facturas/:id" element={
+              <ProtectedRoute>
+                <FacturaPreview />
+              </ProtectedRoute>
+            } />
           </Routes>
           <ToastContainer position="top-center" autoClose={3000} />
-        </CartProvider>
-      </AuthProvider>
+        </AuthProvider>
+      </CartProvider>
     </Router>
   );
 }
