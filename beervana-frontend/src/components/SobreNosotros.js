@@ -1,6 +1,5 @@
 import React from 'react';
 import './SobreNosotros.css';
-import sobreImg from '../assets/nosotros.png';
 import Footer from '../components/Footer';
 
 function SobreNosotros() {

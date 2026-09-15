@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Minus, Plus, Trash2, ShoppingBag } from 'react-feather';
+import { toast } from 'react-toastify';
 import { useCart } from '../CartContext';
 import Footer from '../components/Footer';
 
@@ -9,47 +10,37 @@ function Cart() {
   const navigate = useNavigate();
   const {
     cartItems,
-    addToCart,
     removeFromCart,
     clearCart,
-    setCartItems
+    setCartItems,
+    metodoEntrega,
+    setMetodoEntrega,
+    costoEnvio
   } = useCart();
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleAgregar = (id) => {
-    addToCart(id, 1); // Suma 1 a la cantidad local
-  };
-
-  const handleSumar = (id) => {
-    const item = cartItems.find(item => item.id === id);
+  // CartContext ya persiste en localStorage cuando cambia cartItems, así que
+  // acá alcanza con actualizar el estado.
+  const cambiarCantidad = (id, delta) => {
+    const item = cartItems.find(ci => ci.id === id);
     if (!item) return;
 
-    const updated = cartItems.map(ci => {
-      if (ci.id === id) {
-        return { ...ci, cantidad: ci.cantidad + 1 };
-      }
-      return ci;
-    });
-    setCartItems(updated);
-    localStorage.setItem('cart', JSON.stringify(updated));
-    window.dispatchEvent(new Event("storage"));
-  }
+    const nuevaCantidad = item.cantidad + delta;
+    if (nuevaCantidad < 1) return;
 
-  const handleRestar = (id) => {
-    const item = cartItems.find(item => item.id === id);
-    if (!item || item.cantidad <= 1) return;
+    if (typeof item.stock === 'number' && nuevaCantidad > item.stock) {
+      toast.error(`Solo quedan ${item.stock} unidades de ${item.nombre}`);
+      return;
+    }
 
-    const updated = cartItems.map(ci => {
-      if (ci.id === id) {
-        return { ...ci, cantidad: ci.cantidad - 1 };
-      }
-      return ci;
-    });
-    setCartItems(updated);
-    localStorage.setItem('cart', JSON.stringify(updated));
-    window.dispatchEvent(new Event("storage"));
+    setCartItems(cartItems.map(ci =>
+      ci.id === id ? { ...ci, cantidad: nuevaCantidad } : ci
+    ));
   };
+
+  const handleSumar = (id) => cambiarCantidad(id, 1);
+  const handleRestar = (id) => cambiarCantidad(id, -1);
 
   const handleQuitar = (id) => {
     removeFromCart(id); // Quita el ítem completamente del estado
@@ -66,7 +57,12 @@ function Cart() {
   };
 
   const total = cartItems.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
-  const shipping = cartItems.length > 0 ? 200 : 0;
+
+  // El costo lo dicta el backend (GET /costo-envio) y el retiro en el local no
+  // paga envío. Mientras no haya llegado la respuesta se muestra un guion en
+  // vez de un número inventado.
+  const envioConocido = costoEnvio !== null;
+  const shipping = metodoEntrega === 'retiro' ? 0 : (costoEnvio ?? 0);
   const finalTotal = total + shipping;
 
   if (cartItems.length === 0) {
@@ -125,6 +121,7 @@ function Cart() {
                         style={{ borderColor: chocolate, color: chocolate }}
                         onClick={() => handleRestar(item.id)}
                         disabled={item.cantidad <= 1}
+                        aria-label={`Quitar una unidad de ${item.nombre}`}
                       >
                         <Minus size={14} />
                       </button>
@@ -133,13 +130,18 @@ function Cart() {
                         className="btn btn-outline-secondary btn-sm"
                         style={{ borderColor: chocolate, color: chocolate }}
                         onClick={() => handleSumar(item.id)}
+                        aria-label={`Agregar una unidad de ${item.nombre}`}
                       >
                         <Plus size={14} />
                       </button>
                     </div>
                     <div className="d-flex justify-content-between align-items-center" style={{ flex: 1 }}>
                       <div className="fw-bold">${(item.precio * item.cantidad).toFixed(2)}</div>
-                      <button onClick={() => handleQuitar(item.id)} className="btn p-0 text-danger ms-3">
+                      <button
+                        onClick={() => handleQuitar(item.id)}
+                        className="btn p-0 text-danger ms-3"
+                        aria-label={`Quitar ${item.nombre} del carrito`}
+                      >
                         <Trash2 size={16} />
                       </button>
                     </div>
@@ -153,8 +155,49 @@ function Cart() {
                   Resumen del pedido
                 </div>
                 <div className="card-body">
+                  <fieldset className="mb-3">
+                    <legend className="fs-6 fw-semibold" style={{ color: chocolate }}>
+                      ¿Cómo lo querés recibir?
+                    </legend>
+
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="metodoEntrega"
+                        id="entrega-envio"
+                        value="envio"
+                        checked={metodoEntrega === 'envio'}
+                        onChange={() => setMetodoEntrega('envio')}
+                      />
+                      <label className="form-check-label" htmlFor="entrega-envio">
+                        Envío a domicilio
+                        {envioConocido && ` (+$${costoEnvio.toFixed(2)})`}
+                      </label>
+                    </div>
+
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="metodoEntrega"
+                        id="entrega-retiro"
+                        value="retiro"
+                        checked={metodoEntrega === 'retiro'}
+                        onChange={() => setMetodoEntrega('retiro')}
+                      />
+                      <label className="form-check-label" htmlFor="entrega-retiro">
+                        Retiro en el local (sin cargo)
+                      </label>
+                    </div>
+                  </fieldset>
+
                   <p>Subtotal: ${total.toFixed(2)}</p>
-                  <p>Envío: ${shipping.toFixed(2)}</p>
+                  <p>
+                    Envío: {envioConocido || metodoEntrega === 'retiro'
+                      ? `$${shipping.toFixed(2)}`
+                      : '—'}
+                  </p>
                   <hr />
                   <h5>Total: ${finalTotal.toFixed(2)}</h5>
                   <button
@@ -170,14 +213,7 @@ function Cart() {
                     onClick={handleComprar}
                     disabled={isLoading}
                   >
-                    {isLoading ? (
-                      <>
-                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                        Generando factura...
-                      </>
-                    ) : (
-                      'Proceder al pago'
-                    )}
+                    Proceder al pago
                   </button>
                 </div>
               </div>

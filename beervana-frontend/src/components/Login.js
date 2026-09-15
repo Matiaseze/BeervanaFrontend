@@ -1,6 +1,7 @@
 // src/components/Login.js
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { login as loginService } from '../services/auth';
 import { useAuth } from '../AuthContext';
 import { Form, Button } from 'react-bootstrap';
@@ -18,12 +19,16 @@ function Login() {
 
     try {
       const data = await loginService(email, password);
-      login(data.token); // actualiza el contexto y localStorage
+      await login(data.token); // actualiza el contexto, localStorage y trae el carrito
 
       navigate('/');
     } catch (error) {
       console.error('Error al iniciar sesión:', error);
-      alert('Credenciales incorrectas o error del servidor');
+      toast.error(
+        error.response?.status === 401
+          ? 'Credenciales incorrectas'
+          : 'No se pudo iniciar sesión. Intentá de nuevo.'
+      );
     }
   };
 
@@ -60,7 +65,7 @@ function Login() {
 
 
               <div className="text-center mt-3 py-3">
-                <a href="/registro">¿No tenés cuenta? Registrate</a>
+                <Link to="/registro">¿No tenés cuenta? Registrate</Link>
               </div>
 
               <Button type="submit" className="chocolate-submit-btn w-100">

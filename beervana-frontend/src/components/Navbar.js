@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/Ber.png';
-import { ShoppingCart } from 'react-feather';
+import { ShoppingCart, Package } from 'react-feather';
 import { useCart } from '../CartContext';
 import { useAuth } from '../AuthContext';
 import { toast } from 'react-toastify';
 
 function Navbar() {
-  const { cartItems } = useCart();
+  const { cartItems, pedidoPendiente } = useCart();
   const { isAuthenticated, logout } = useAuth();
   const itemCount = cartItems.reduce((sum, item) => sum + item.cantidad, 0);
   const navigate = useNavigate();
@@ -49,10 +49,28 @@ function Navbar() {
           <div className="d-flex">
             {isAuthenticated ? (
               <>
-                <Link to="/cart" className="btn btn-outline-light d-flex align-items-center me-2">
-                  <ShoppingCart size={16} />
-                  <span className="ms-2">Carrito ({itemCount})</span>
+                <Link to="/compras" className="btn btn-outline-light d-flex align-items-center me-2">
+                  <Package size={16} />
+                  <span className="ms-2">Compras</span>
                 </Link>
+                {/* Con el carrito vacío y un pedido esperando pago, el botón
+                    lleva al pedido: el carrito se vació justamente al crearlo.
+                    Si el usuario armó un carrito nuevo, ese tiene prioridad;
+                    si no, no habría forma de llegar a /cart desde el Navbar. */}
+                {itemCount === 0 && pedidoPendiente ? (
+                  <Link
+                    to={`/pedidos/${pedidoPendiente.codigo}`}
+                    className="btn btn-outline-warning d-flex align-items-center me-2"
+                  >
+                    <ShoppingCart size={16} />
+                    <span className="ms-2">Pedido pendiente</span>
+                  </Link>
+                ) : (
+                  <Link to="/cart" className="btn btn-outline-light d-flex align-items-center me-2">
+                    <ShoppingCart size={16} />
+                    <span className="ms-2">Carrito ({itemCount})</span>
+                  </Link>
+                )}
                 <button className="btn btn-outline-warning me-2" onClick={handleLogout}>
                   Logout
                 </button>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import api from '../services/api';
+import { toast } from 'react-toastify';
 import { useCart } from '../CartContext';
 import { Trash2 } from 'react-feather';
 import Footer from '../components/Footer';
@@ -219,7 +220,7 @@ function ProductList() {
                               if (cantidad > 0 && cantidad <= product.stock) {
                                 handleAgregar(product, cantidad);
                               } else {
-                                alert('Cantidad inválida');
+                                toast.error('Cantidad inválida');
                               }
                             }}
                           >
@@ -288,7 +289,10 @@ function ProductList() {
                       padding: '0.35rem 1rem',
                     }} onClick={() => setSelectedProduct(null)}>Cerrar</button>
                     <button className="btn" style={{ backgroundColor: chocolate, color: 'white', border: `1.5px solid ${chocolate}` }} onClick={() => {
-                      addToCart(selectedProduct.id, 1);
+                      // El producto entero, no el id: addToCart lee .stock,
+                      // .precio y .nombre del objeto. Pasando el id metía un
+                      // ítem fantasma y el total del carrito quedaba en NaN.
+                      addToCart(selectedProduct, 1);
                       setSelectedProduct(null);
                     }}>
                       Agregar al carrito

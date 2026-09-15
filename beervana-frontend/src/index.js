@@ -4,11 +4,8 @@ import App from './App';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { CartProvider } from './CartContext';
 
+// El CartProvider vive en App.js, envolviendo al AuthProvider.
+// Si se lo agrega también acá quedan dos estados de carrito independientes.
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <CartProvider>
-    <App />
-  </CartProvider>
-);
+root.render(<App />);

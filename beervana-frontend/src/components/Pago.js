@@ -1,138 +1,57 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../CartContext';
 import { toast } from 'react-toastify';
-import Footer from '../components/Footer';
 
+/**
+ * Paso intermedio entre el carrito y el pedido.
+ *
+ * Crea el pedido (que reserva el stock y vacía el carrito) y manda al detalle,
+ * que es donde están las opciones de pago. No renderiza el pedido: si lo
+ * hiciera habría dos pantallas iguales, y la URL de esta no serviría para
+ * volver después.
+ */
 function Pago() {
-  const chocolate = '#7b4b32';
-  const { checkout, payInvoice } = useCart();
-  const [factura, setFactura] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [processingPayment, setProcessingPayment] = useState(false);
+  const { cartItems, cartCargado, crearPedidoDelCarrito } = useCart();
+  const [mensaje, setMensaje] = useState('Reservando tu pedido...');
   const navigate = useNavigate();
   const hasRun = useRef(false);
 
   useEffect(() => {
-    const generarFactura = async () => {
+    // Esperar a que el carrito esté cargado: en el primer render siempre viene
+    // vacío porque fetchCart todavía está en vuelo.
+    if (!cartCargado) return;
+
+    const generarPedido = async () => {
       if (hasRun.current) return;
       hasRun.current = true;
 
-      const result = await checkout();
-      if (result) {
-        setFactura(result);
-      } else {
-        toast.error('No se pudo generar la factura');
-        navigate('/cart');
+      if (cartItems.length === 0) {
+        toast.info('Tu carrito está vacío');
+        navigate('/cart', { replace: true });
+        return;
       }
-      setLoading(false);
+
+      try {
+        const pedido = await crearPedidoDelCarrito();
+        // replace: que el botón "atrás" no vuelva a disparar la creación
+        navigate(`/pedidos/${pedido.codigo}`, { replace: true });
+      } catch (err) {
+        // 409 es falta de stock: alguien se llevó las unidades mientras tanto
+        const datos = err.response?.data;
+        toast.error(datos?.error || datos?.message || 'No se pudo generar el pedido');
+        setMensaje('No se pudo generar el pedido.');
+        navigate('/cart', { replace: true });
+      }
     };
 
-    generarFactura();
-  }, [checkout, navigate]);
-
-  const handlePago = async () => {
-    try {
-      setProcessingPayment(true);
-      await payInvoice(factura.id); // Usa el contexto para limpiar carrito
-      toast.success('¡Pago realizado con éxito!');
-      navigate('/');
-    } catch (err) {
-      console.error('Error al pagar la factura:', err.response?.data || err.message);
-      toast.error(err.response?.data?.error || 'Error al procesar el pago');
-    } finally {
-      setProcessingPayment(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div style={{ background: 'linear-gradient(to right,rgb(218, 178, 139), #e7caae)', minHeight: '100vh', padding: '2rem' }}>
-        <div className="container py-5 text-center">Cargando factura...</div>
-      </div>
-    );
-  }
-
-  if (!factura) return null;
+    generarPedido();
+  }, [cartCargado, cartItems, crearPedidoDelCarrito, navigate]);
 
   return (
-    <>
-      <div style={{ background: 'linear-gradient(to right,rgb(223, 184, 145),rgb(231, 190, 152))', minHeight: '100vh', padding: '2rem' }}>
-        <div className="container py-5">
-          <h2 className="mb-4">Resumen de Factura</h2>
-
-          {/* Tabla de detalles */}
-          <div className="card mb-4">
-            <div className="card-body">
-              <p><strong>Fecha:</strong> {new Date(factura.fecha).toLocaleString()}</p>
-              <table className="table table-bordered" style={{ backgroundColor: '#fdf7ee' }}>
-                <thead style={{ backgroundColor: chocolate, color: 'white' }}>
-                  <tr>
-                    <th>Producto</th>
-                    <th>Cantidad</th>
-                    <th>Precio unitario</th>
-                    <th>Subtotal</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {factura.detalles.map((item) => (
-                    <tr key={item.id}>
-                      <td>{item.cerveza.nombre}</td>
-                      <td>{item.cantidad}</td>
-                      <td>${parseFloat(item.precio_unitario).toFixed(2)}</td>
-                      <td>${parseFloat(item.subtotal).toFixed(2)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <h5 className="text-end mt-3">Total: ${factura.precio_total.toFixed(2)}</h5>
-            </div>
-          </div>
-
-          {/* Métodos de pago */}
-          <h4>Seleccioná un método de pago:</h4>
-          <div className="d-flex gap-3 mb-4">
-            <button
-              className="btn"
-              style={{
-                backgroundColor: chocolate,
-                color: 'white',
-                border: `1.5px solid ${chocolate}`
-              }}
-              onClick={handlePago}
-              disabled={processingPayment}
-            >
-              {processingPayment ? (
-                <>
-                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                  Procesando...
-                </>
-              ) : (
-                'Pagar'
-              )}
-            </button>
-
-            <button
-              className="btn"
-              style={{
-                borderRadius: '5px',
-                border: `1.5px solid ${chocolate}`,
-                color: chocolate,
-                backgroundColor: 'transparent',
-                fontWeight: '600',
-                padding: '0.35rem 1rem',
-              }}
-              disabled
-            >
-              Mercado Pago (próximamente)
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <Footer />
-    </>
+    <div style={{ background: 'linear-gradient(to right,rgb(218, 178, 139), #e7caae)', minHeight: '100vh', padding: '2rem' }}>
+      <div className="container py-5 text-center">{mensaje}</div>
+    </div>
   );
 }
 

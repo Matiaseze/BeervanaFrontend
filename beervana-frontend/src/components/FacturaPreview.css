@@ -1,0 +1,287 @@
+/* Template base de la factura.
+   Pensado para verse igual en pantalla y en papel: las medidas están en mm
+   para que la vista previa sea fiel a lo que sale impreso. */
+
+.factura-fondo {
+  background: linear-gradient(to right, rgb(218, 178, 139), #e7caae);
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+
+.factura-hoja {
+  background: #fff;
+  width: 210mm;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 15mm;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  color: #1b1a19;
+  font-size: 10pt;
+}
+
+.factura-encabezado {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 2px solid #7b4b32;
+  padding-bottom: 8mm;
+  margin-bottom: 8mm;
+}
+
+.factura-emisor h1 {
+  font-size: 20pt;
+  color: #7b4b32;
+  margin: 0 0 2mm;
+  letter-spacing: 1px;
+}
+
+.factura-emisor p,
+.factura-receptor p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.factura-comprobante {
+  text-align: right;
+  min-width: 55mm;
+}
+
+.factura-comprobante .tipo {
+  display: inline-block;
+  border: 2px solid #7b4b32;
+  color: #7b4b32;
+  font-size: 22pt;
+  font-weight: bold;
+  line-height: 1;
+  padding: 2mm 5mm;
+  margin-bottom: 3mm;
+}
+
+.factura-bloques {
+  display: flex;
+  gap: 6mm;
+  margin-bottom: 8mm;
+}
+
+.factura-bloque {
+  flex: 1;
+  border: 1px solid #d8cfc6;
+  padding: 4mm;
+}
+
+.factura-bloque h2 {
+  font-size: 9pt;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #7b4b32;
+  margin: 0 0 2mm;
+}
+
+.factura-items {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 6mm;
+}
+
+.factura-items thead th {
+  background: #7b4b32;
+  color: #fff;
+  text-align: left;
+  padding: 2.5mm 3mm;
+  font-size: 9pt;
+  font-weight: 600;
+}
+
+.factura-items tbody td {
+  border-bottom: 1px solid #e8e0d8;
+  padding: 2.5mm 3mm;
+}
+
+.factura-items .num {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.factura-totales {
+  margin-left: auto;
+  width: 75mm;
+}
+
+.factura-totales tr td {
+  padding: 1.5mm 3mm;
+}
+
+.factura-totales tr td:last-child {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.factura-totales .total {
+  border-top: 2px solid #7b4b32;
+  font-size: 13pt;
+  font-weight: bold;
+  color: #7b4b32;
+}
+
+.factura-pie {
+  margin-top: 10mm;
+  padding-top: 4mm;
+  border-top: 1px solid #d8cfc6;
+  font-size: 8pt;
+  color: #6b6560;
+  text-align: center;
+}
+
+/* ── Impresión / exportar a PDF ─────────────────────────────────────────────
+   El botón "Exportar PDF" abre el diálogo del navegador, donde "Guardar como
+   PDF" produce un PDF vectorial. Acá se saca todo lo que no es la factura y se
+   reafirma lo que el navegador descarta por su cuenta. */
+@media print {
+  /* El margen va en @page y no como padding de la hoja: así se repite en
+     todas las páginas si la factura tiene muchos renglones. Un padding solo
+     daría aire arriba de la primera y abajo de la última. */
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  /* Los navegadores no imprimen fondos ni rellenos salvo que se les fuerce.
+     Sin esto se pierden el encabezado marrón y la fila de títulos de la tabla. */
+  html,
+  body {
+    background: #fff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Especificidad 0-2-0 a propósito.
+     `.factura-acciones` sola (0-1-0, con !important) empataba con la utilidad
+     `.d-flex { display: flex !important }` de Bootstrap, y con igual
+     especificidad e igual importancia decide el orden en el archivo. Como en
+     index.js el import de App va antes que el de Bootstrap, el CSS de los
+     componentes se emite primero y Bootstrap ganaba: los botones seguían
+     saliendo impresos. Con el descendiente ya no depende del orden. */
+  nav,
+  footer,
+  .Toastify,
+  .factura-fondo .factura-acciones {
+    display: none !important;
+  }
+
+  .factura-fondo {
+    background: #fff !important;
+    padding: 0 !important;
+    /* 0 y no auto: `min-height: auto` fuera de flex/grid no está soportado
+       de forma consistente (Firefox lo ignora). */
+    min-height: 0 !important;
+  }
+
+  .factura-fondo .factura-hoja {
+    box-shadow: none !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Bordes y rellenos reafirmados: Bootstrap borra box-shadow de todo en su
+     propio @media print, y el descarte de fondos del navegador se lleva
+     puestos los rellenos de color. */
+  .factura-fondo .factura-encabezado {
+    border-bottom: 2px solid #7b4b32 !important;
+  }
+
+  .factura-fondo .factura-bloque {
+    border: 1px solid #d8cfc6 !important;
+  }
+
+  .factura-fondo .factura-comprobante .tipo {
+    border: 2px solid #7b4b32 !important;
+    color: #7b4b32 !important;
+  }
+
+  .factura-fondo .factura-items thead th {
+    background: #7b4b32 !important;
+    color: #fff !important;
+  }
+
+  .factura-fondo .factura-items tbody td {
+    border-bottom: 1px solid #e8e0d8 !important;
+  }
+
+  .factura-fondo .factura-totales .total {
+    border-top: 2px solid #7b4b32 !important;
+    color: #7b4b32 !important;
+  }
+
+  .factura-fondo .factura-pie {
+    border-top: 1px solid #d8cfc6 !important;
+  }
+
+  /* Que no se corte un renglón entre dos hojas */
+  .factura-fondo .factura-items tr,
+  .factura-fondo .factura-totales {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .factura-fondo .factura-items thead {
+    display: table-header-group;
+  }
+}
+
+/* ── Código de mostrador del comprobante ────────────────────────────────────
+   Es lo que el cajero busca para saber qué está cobrando, así que se imprime
+   grande y monoespaciado: se lee de un vistazo y se tipea sin errores. */
+.comprobante-codigo {
+  border: 2px dashed #7b4b32;
+  padding: 4mm;
+  margin-bottom: 8mm;
+  text-align: center;
+}
+
+.comprobante-codigo span {
+  display: block;
+  font-size: 8pt;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #7b4b32;
+  margin-bottom: 1mm;
+}
+
+.comprobante-codigo strong {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 24pt;
+  letter-spacing: 4px;
+  color: #1b1a19;
+}
+
+/* Barras dibujadas con CSS a partir del código. No es un simbolismo estándar,
+   así que no lo lee un lector láser: es la referencia visual, y el código
+   impreso debajo es el que se tipea en el mostrador. */
+.comprobante-codigo .barras {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 2px;
+  height: 14mm;
+  margin-bottom: 2mm;
+}
+
+.comprobante-codigo .barras i {
+  display: block;
+  height: 100%;
+  background: #1b1a19;
+}
+
+@media print {
+  .factura-fondo .comprobante-codigo {
+    border: 2px dashed #7b4b32 !important;
+  }
+
+  .factura-fondo .comprobante-codigo .barras i {
+    background: #1b1a19 !important;
+  }
+}
