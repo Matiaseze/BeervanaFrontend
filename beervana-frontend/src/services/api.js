@@ -1,10 +1,30 @@
 import axios from 'axios';
 
-// Usá el dominio real si está en producción
+/**
+ * A qué backend le pega el frontend.
+ *
+ * Sale de REACT_APP_API_URL en vez de estar escrito acá, así cambiar de backend
+ * no es editar código: se cambia el valor y se rearma. Antes había tres URLs
+ * comentadas y había que acordarse de cuál descomentar antes de deployar, que
+ * es exactamente cómo se termina publicando el frontend apuntando a localhost.
+ *
+ * De dónde sale el valor, de mayor a menor prioridad:
+ *
+ *   1. Variable de entorno real   -> docker-compose la define para desarrollo;
+ *                                    en Vercel se carga en Settings del proyecto.
+ *   2. .env.development.local     -> tu override personal (no va al repo).
+ *   3. .env.development           -> default de `npm start`.
+ *      .env.production            -> default de `npm run build`, que es lo que
+ *                                    corre Vercel.
+ *
+ * OJO con algo de Create React App: el valor se incrusta en el bundle al
+ * COMPILAR, no se lee al ejecutar. Cambiarlo en Vercel no alcanza: hay que
+ * volver a deployar para que tome efecto.
+ */
+const URL_API = process.env.REACT_APP_API_URL || 'http://localhost:8000/my_api';
+
 const api = axios.create({
-  baseURL: 'https://beervana.vercel.app/my_api'
-    /* baseURL: 'https://beervana-4i1bzpr9o-rodrigos-projects-fa5acc60.vercel.app/my_api', // Test: desde la preview en vercel */
-    /* baseURL: 'http://localhost:8000/my_api', // prefijo personalizado */
+  baseURL: URL_API,
 });
 
 // Agregar token automáticamente si existe
